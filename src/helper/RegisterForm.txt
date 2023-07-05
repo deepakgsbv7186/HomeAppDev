@@ -1,0 +1,132 @@
+import React, { useState } from "react";
+import { View, TextInput, Text, StyleSheet } from "react-native";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { ProgressBar, MD3Colors } from "react-native-paper";
+import COLORS from "../theme/colors";
+import MyButton from "../components/MyButton";
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from "react-native-responsive-dimensions";
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  dob: Yup.string().required("Date of Birth is required"),
+  phone: Yup.string().required("Phone number is required"),
+});
+
+const StepOne = () => {
+  return (
+    <View>
+      <Text>From Form One</Text>
+    </View>
+  );
+};
+
+const StepTwo = () => {
+  return (
+    <View>
+      <Text>From Form Two</Text>
+    </View>
+  );
+};
+const StepThree = () => {
+  return (
+    <View>
+      <Text>From Form Three</Text>
+    </View>
+  );
+};
+
+const RegisterForm = () => {
+  const [step, setStep] = useState(0);
+  const [progressStatus, setProgressStatus] = useState(0.33);
+  const formHeader = ["Personal", "Contact", "Address"];
+  const formBody = () => {
+    switch (step) {
+      case 0:
+        return <StepOne />;
+      case 1:
+        return <StepTwo />;
+      case 2:
+        return <StepThree />;
+    }
+  };
+  const handleBack = () => {
+    setStep((currentStep) => currentStep - 1);
+    setProgressStatus((progress) => progress - 0.33);
+    // console.log(progressStatus);
+  };
+  const handleNext = () => {
+    setStep((currentStep) => currentStep + 1);
+    setProgressStatus((progress) => progress + 0.33);
+    // console.log(progressStatus);
+  };
+  const handleSubmit = () => {
+    setProgressStatus((progress) => progress + 0.34);
+    // console.log(progressStatus);
+  };
+  return (
+    <View style={styles.container}>
+      <ProgressBar progress={progressStatus} color={"green"} />
+      <View
+        style={{
+          flex: 1,
+          width: responsiveWidth(90),
+          backgroundColor: COLORS.red,
+        }}
+      >
+        <View style={{ marginVertical: 100 }}>
+          <Text>{formHeader[step]}</Text>
+        </View>
+        <View>{formBody()}</View>
+
+        <View
+          style={{
+            width: responsiveWidth(90),
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          {step < 1 ? null : (
+            <MyButton
+              btnColor={COLORS.grey}
+              btnWidth={"40%"}
+              title={"← Back"}
+              onPress={handleBack}
+            />
+          )}
+          {step < formHeader.length - 1 ? (
+            <MyButton
+              btnColor={COLORS.blue}
+              btnWidth={"40%"}
+              title={"Next Step →"}
+              onPress={handleNext}
+            />
+          ) : (
+            <MyButton
+              btnColor={COLORS.blue}
+              btnWidth={"40%"}
+              title={"Submit"}
+              onPress={handleSubmit}
+            />
+          )}
+        </View>
+      </View>
+    </View>
+  );
+};
+
+export default RegisterForm;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "red",
+    width: "90%",
+    alignSelf: "center",
+  },
+});
